@@ -6,55 +6,79 @@ import {
   AttachMoney as MoneyIcon,
 } from '@mui/icons-material';
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
+import { useState, useCallback } from 'react';
 
 const summaryCards = [
   {
-    title: 'Today\'s Walks',
+    title: "Today's Walks",
     value: '8',
-    icon: <PetsIcon sx={{ fontSize: 40 }} />,
+    icon: <PetsIcon sx={{ fontSize: 40 }} />, 
     color: '#4CAF50',
   },
   {
     title: 'Active Customers',
     value: '24',
-    icon: <ScheduleIcon sx={{ fontSize: 40 }} />,
+    icon: <ScheduleIcon sx={{ fontSize: 40 }} />, 
     color: '#2196F3',
   },
   {
     title: 'Total Distance',
     value: '5.2 mi',
-    icon: <RouteIcon sx={{ fontSize: 40 }} />,
+    icon: <RouteIcon sx={{ fontSize: 40 }} />, 
     color: '#FF9800',
   },
   {
     title: 'Weekly Earnings',
     value: '$840',
-    icon: <MoneyIcon sx={{ fontSize: 40 }} />,
+    icon: <MoneyIcon sx={{ fontSize: 40 }} />, 
     color: '#009688',
   },
 ];
 
+const home = {
+  id: 0,
+  customer: 'Home (Dupont Circle)',
+  address: 'Dupont Circle, Washington, DC',
+  time: '8:30 AM',
+  coordinates: { lat: 38.9096, lng: -77.0434 },
+};
+
 const mockWalks = [
+  home,
   {
     id: 1,
     customer: 'John & Luna',
-    address: '1234 Park Ave NW, Washington, DC',
+    address: '1234 19th St NW, Washington, DC',
     time: '9:00 AM',
-    coordinates: { lat: 38.9115, lng: -77.0341 },
+    coordinates: { lat: 38.9087, lng: -77.0425 },
   },
   {
     id: 2,
     customer: 'Sarah & Max',
-    address: '5678 Wisconsin Ave NW, Washington, DC',
-    time: '10:00 AM',
-    coordinates: { lat: 38.9583, lng: -77.0835 },
+    address: '1812 N St NW, Washington, DC',
+    time: '9:30 AM',
+    coordinates: { lat: 38.9092, lng: -77.0421 },
   },
   {
     id: 3,
     customer: 'Mike & Rocky',
-    address: '910 Connecticut Ave NW, Washington, DC',
+    address: '1500 Massachusetts Ave NW, Washington, DC',
+    time: '10:00 AM',
+    coordinates: { lat: 38.9098, lng: -77.0340 },
+  },
+  {
+    id: 4,
+    customer: 'Emma & Daisy',
+    address: '2000 P St NW, Washington, DC',
+    time: '10:30 AM',
+    coordinates: { lat: 38.9105, lng: -77.0457 },
+  },
+  {
+    id: 5,
+    customer: 'Alex & Buddy',
+    address: '1700 Q St NW, Washington, DC',
     time: '11:00 AM',
-    coordinates: { lat: 38.9047, lng: -77.0366 },
+    coordinates: { lat: 38.9112, lng: -77.0398 },
   },
 ];
 
@@ -63,12 +87,7 @@ const mapContainerStyle = {
   height: '500px',
 };
 
-const center = {
-  lat: 38.9072,
-  lng: -77.0369,
-};
-
-import { useState, useCallback } from 'react';
+const center = home.coordinates;
 
 export default function Dashboard() {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
@@ -94,7 +113,7 @@ export default function Dashboard() {
           mockWalks[mockWalks.length - 1].coordinates.lng
         ),
         waypoints,
-        optimizeWaypoints: true,
+        optimizeWaypoints: false,
         travelMode: google.maps.TravelMode.DRIVING,
       },
       (result, status) => {
@@ -110,7 +129,6 @@ export default function Dashboard() {
       <Typography variant="h4" gutterBottom>
         Dashboard
       </Typography>
-      
       <Grid container spacing={3} mb={4}>
         {summaryCards.map((card) => (
           <Grid item xs={12} sm={6} md={3} key={card.title}>
@@ -148,16 +166,15 @@ export default function Dashboard() {
           </Grid>
         ))}
       </Grid>
-
       <Grid container spacing={3}>
         {/* Left: Schedule */}
         <Grid item xs={12} md={5}>
           <Typography variant="h5" gutterBottom>
             Today's Schedule
           </Typography>
-          {mockWalks.map((walk) => (
+          {mockWalks.map((walk, idx) => (
             <Paper
-              key={walk.time}
+              key={walk.id}
               sx={{
                 p: 2,
                 display: 'flex',
@@ -173,12 +190,12 @@ export default function Dashboard() {
                   pr: 2,
                 }}
               >
-                <Typography variant="h6" color="primary">
+                <Typography variant="h6" color={idx === 0 ? 'secondary' : 'primary'}>
                   {walk.time}
                 </Typography>
               </Box>
               <Box sx={{ ml: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold">
+                <Typography variant="subtitle1" fontWeight={idx === 0 ? 'bold' : 'normal'}>
                   {walk.customer}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
