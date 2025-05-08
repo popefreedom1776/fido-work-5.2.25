@@ -18,6 +18,7 @@ import {
   Schedule as ScheduleIcon,
   People as PeopleIcon,
   Map as MapIcon,
+  Pets as PetsIcon,
 } from '@mui/icons-material';
 
 interface LayoutProps {
@@ -31,6 +32,7 @@ const menuItems = [
   { text: 'Schedule', icon: <ScheduleIcon />, path: '/schedule' },
   { text: 'Customers', icon: <PeopleIcon />, path: '/customers' },
   { text: 'Route Map', icon: <MapIcon />, path: '/route' },
+  { text: 'Dog Directory', icon: <PetsIcon />, path: '/dog-directory' },
 ];
 
 export default function Layout({ children }: LayoutProps) {

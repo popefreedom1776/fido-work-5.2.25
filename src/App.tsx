@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Schedule from './pages/Schedule';
 import Customers from './pages/Customers';
 import RouteMap from './pages/RouteMap';
+import DogDirectory from './pages/DogDirectory';
 
 const theme = createTheme({
   palette: {
@@ -38,6 +39,7 @@ function App() {
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/route" element={<RouteMap />} />
+              <Route path="/dog-directory" element={<DogDirectory />} />
             </Routes>
           </Layout>
         </Router>

@@ -49,6 +49,17 @@ const center = {
   lng: -77.0369,
 };
 
+// Helper function to create a numbered SVG data URL for marker icons
+function createNumberedMarkerIcon(number: number) {
+  const svg = `
+    <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="18" fill="#008080" stroke="#fff" stroke-width="3"/>
+      <text x="20" y="26" text-anchor="middle" font-size="20" font-family="Arial" font-weight="bold" fill="#fff">${number}</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
 export default function RouteMap() {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -128,18 +139,24 @@ export default function RouteMap() {
               zoom={12}
               onLoad={onLoad}
             >
-              {!directions && mockWalks.map((walk) => (
+              {!directions && mockWalks.map((walk, index) => (
                 <Marker
                   key={walk.id}
                   position={walk.coordinates}
                   title={walk.customer}
+                  icon={{
+                    url: createNumberedMarkerIcon(index + 1),
+                    ...(window.google && window.google.maps
+                      ? { scaledSize: new window.google.maps.Size(40, 40) }
+                      : {}),
+                  }}
                 />
               ))}
               {directions && (
                 <DirectionsRenderer
                   directions={directions}
                   options={{
-                    suppressMarkers: false,
+                    suppressMarkers: true,
                     polylineOptions: {
                       strokeColor: '#008080',
                       strokeWeight: 5,

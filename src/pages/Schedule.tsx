@@ -5,15 +5,21 @@ import {
   Typography,
   Grid,
   Button,
+  Tooltip,
 } from '@mui/material';
 import { DateCalendar } from '@mui/x-date-pickers';
-import { Add as AddIcon } from '@mui/icons-material';
+import { Add as AddIcon, Warning as WarningIcon } from '@mui/icons-material';
+
+interface DogProfile {
+  name: string;
+  address: string;
+  walkType: 'individual' | 'group';
+}
 
 interface Walk {
   time: string;
-  customer: string;
-  address: string;
   duration: string;
+  dogs: DogProfile[];
 }
 
 interface Schedule {
@@ -24,26 +30,33 @@ const mockSchedule: Schedule = {
   '2024-04-16': [
     {
       time: '9:00 AM',
-      customer: 'John & Luna',
-      address: '1234 Park Ave NW',
       duration: '30 min',
+      dogs: [
+        { name: 'Luna', address: '1234 Park Ave NW', walkType: 'individual' },
+        { name: 'Max', address: '5678 Wisconsin Ave NW', walkType: 'group' },
+      ],
     },
     {
       time: '10:00 AM',
-      customer: 'Sarah & Max',
-      address: '5678 Wisconsin Ave NW',
       duration: '30 min',
+      dogs: [
+        { name: 'Bella', address: '910 Connecticut Ave NW', walkType: 'group' },
+      ],
     },
   ],
   '2024-04-17': [
     {
       time: '9:30 AM',
-      customer: 'Mike & Bella',
-      address: '910 Connecticut Ave NW',
       duration: '30 min',
+      dogs: [
+        { name: 'Rocky', address: '910 Connecticut Ave NW', walkType: 'individual' },
+      ],
     },
   ],
 };
+
+// Temporary: List of escape artist dog names (should be replaced with real data integration)
+const escapeArtistNames = ['Luna'];
 
 export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -96,8 +109,6 @@ export default function Schedule() {
                   sx={{
                     p: 2,
                     mb: 2,
-                    display: 'flex',
-                    alignItems: 'center',
                     bgcolor: 'background.default',
                   }}
                   elevation={0}
@@ -107,6 +118,7 @@ export default function Schedule() {
                       minWidth: 100,
                       borderRight: '1px solid #eee',
                       pr: 2,
+                      mb: 2,
                     }}
                   >
                     <Typography variant="h6" color="primary">
@@ -116,13 +128,23 @@ export default function Schedule() {
                       {walk.duration}
                     </Typography>
                   </Box>
-                  <Box sx={{ ml: 2 }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      {walk.customer}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {walk.address}
-                    </Typography>
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    {walk.dogs.map((dog, idx) => (
+                      <Paper key={idx} sx={{ p: 2, minWidth: 180, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', boxShadow: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography variant="subtitle1" fontWeight="bold">{dog.name}</Typography>
+                          {escapeArtistNames.includes(dog.name) && (
+                            <Tooltip title="Escape artist">
+                              <WarningIcon color="warning" fontSize="small" />
+                            </Tooltip>
+                          )}
+                        </Box>
+                        <Typography variant="body2" color="text.secondary">{dog.address}</Typography>
+                        <Typography variant="caption" color={dog.walkType === 'individual' ? 'primary' : 'secondary'} sx={{ mt: 1 }}>
+                          {dog.walkType === 'individual' ? 'Individual Walk' : 'Group Walk'}
+                        </Typography>
+                      </Paper>
+                    ))}
                   </Box>
                 </Paper>
               ))
